@@ -7,9 +7,11 @@ using NotesWebApp.Services;
 
 namespace NotesWebApp.Controllers;
 
+[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 public class BaseController : Controller
 {
     private const string AuthCookieName = "auth_id";
+    private const string LoginUrl = "User/Login";
 
     public override void OnActionExecuting(ActionExecutingContext context)
     {
@@ -18,16 +20,16 @@ public class BaseController : Controller
         var request = this.HttpContext.Request;
         var cookies = request.Cookies;
 
-        if (cookies.TryGetValue(AuthCookieName, out var idString)
+        if (request.Path.ToString().ToLower() != LoginUrl.ToLower()
+            && cookies.TryGetValue(AuthCookieName, out var idString)
             && Guid.TryParse(idString, out var userId)
             && userService.Find(userId) is not null)
         {
-
+            base.OnActionExecuting(context);
         }
         else
         {
-            this.Redirect("User/Login");
+            context.Result = this.Redirect(LoginUrl);
         }
-        base.OnActionExecuting(context);
     }
 }

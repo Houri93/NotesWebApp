@@ -13,14 +13,13 @@ public class UserService
         this.db = db;
     }
 
-    internal User Find(Guid userId)
+    public User Find(Guid userId)
     {
-        return db.Users.Find(userId);
+        return user = db.Users.Find(userId);
     }
 
-    internal User TryLogin(string username, string password)
+    public User TryLogin(string username, string password)
     {
-        user = db.Users.FirstOrDefault(a => a.Username.ToLower() == username.ToLower() && a.Password == password);
-        return user;
+        return user = db.Users.FirstOrDefault(a => a.Username.ToLower() == username.ToLower() && a.Password == password);
     }
 }
